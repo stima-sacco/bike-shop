@@ -1,0 +1,53 @@
+{% extends "app/base.html" %}
+{% load humanize %}
+{% block title %}Your bag — Velo{% endblock %}
+{% block content %}
+  <section class="shop-page">
+    <p class="eyebrow">Your ride, in one place</p>
+    <h1 class="page-title">Your <em>bag.</em></h1>
+    {% if items %}
+      <div class="cart-layout">
+        <div class="cart-items">
+          {% for item in items %}
+            <article class="cart-item">
+              <img src="{{ item.image }}" alt="{{ item.name }} bicycle" loading="lazy">
+              <div class="cart-item-info">
+                <p class="eyebrow">{{ item.type }}</p>
+                <h2>{{ item.name }}</h2>
+                <p class="cart-price">{{ item.price_label }} each</p>
+                <div class="cart-actions">
+                  <form action="{% url 'app:update_cart' item.id %}" method="post" class="quantity-form">
+                    {% csrf_token %}
+                    <label for="quantity-{{ item.id }}">Qty</label>
+                    <input id="quantity-{{ item.id }}" type="number" name="quantity" min="1" max="99" value="{{ item.quantity }}">
+                    <button class="small-action" type="submit">Update</button>
+                  </form>
+                  <form action="{% url 'app:remove_from_cart' item.id %}" method="post">
+                    {% csrf_token %}<button class="small-action remove-action" type="submit">Remove</button>
+                  </form>
+                </div>
+              </div>
+              <strong class="cart-line-total">KSh {{ item.line_total|floatformat:0|intcomma }}</strong>
+            </article>
+          {% endfor %}
+        </div>
+        <aside class="order-summary">
+          <p class="eyebrow">The total</p>
+          <div class="summary-line"><span>Subtotal</span><strong>KSh {{ total|floatformat:0|intcomma }}</strong></div>
+          <p class="summary-note">Delivery costs and timing are confirmed after you place your order.</p>
+          <a class="button button-dark checkout-button" href="{% url 'app:checkout' %}">Continue to checkout <span aria-hidden="true">↗</span></a>
+          {% if not user.is_authenticated %}
+            <p class="account-note">You'll need to <a href="{% url 'app:register' %}?next={% url 'app:checkout' %}">create an account</a> or <a href="{% url 'app:login' %}?next={% url 'app:checkout' %}">sign in</a> before ordering.</p>
+          {% else %}
+            <p class="account-note">Ordering as {{ user.email }}.</p>
+          {% endif %}
+        </aside>
+      </div>
+    {% else %}
+      <div class="empty-cart">
+        <p>Your bag is taking a breather. Find a bike and add it here when you're ready.</p>
+        <a class="button button-dark" href="{% url 'app:index' %}#bikes">Explore the bikes <span aria-hidden="true">↗</span></a>
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

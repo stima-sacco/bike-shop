@@ -1,0 +1,27 @@
+{% extends "app/base.html" %}
+{% load humanize %}
+{% block title %}Order received — Velo{% endblock %}
+{% block content %}
+  <section class="account-page">
+    <div class="account-card confirmation-card">
+      <p class="eyebrow">Thanks for riding with us</p>
+      <h1 class="page-title">Order <em>received.</em></h1>
+      <p class="account-intro">Order reference: <strong>{{ order.order_number }}</strong></p>
+      <div class="confirmation-items">
+        {% for line in item_lines %}
+          <div class="summary-product"><span>{{ line.item.quantity }} × {{ line.item.product_name }}</span><strong>{{ line.line_total_label }}</strong></div>
+        {% endfor %}
+        <div class="summary-line summary-grand-total"><span>Total</span><strong>{{ total_label }}</strong></div>
+      </div>
+      <p class="payment-disclaimer">
+        {% if order.payment_method == "mpesa" %}
+          Your M-Pesa payment is pending. This website does not initiate M-Pesa payments; we will contact you at {{ order.phone }} to confirm payment arrangements.
+        {% else %}
+          Cash on delivery selected. Your order is awaiting confirmation; we will contact you at {{ order.phone }}.
+        {% endif %}
+      </p>
+      <p class="confirmation-address">Delivery to {{ order.delivery_address }}, {{ order.county }} County.</p>
+      <a class="button button-dark form-submit" href="{% url 'app:index' %}">Back to the bikes <span aria-hidden="true">↗</span></a>
+    </div>
+  </section>
+{% endblock %}

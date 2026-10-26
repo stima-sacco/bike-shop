@@ -1,0 +1,44 @@
+{% extends "app/base.html" %}
+{% load humanize %}
+{% block title %}Checkout — Velo{% endblock %}
+{% block content %}
+  <section class="shop-page">
+    <p class="eyebrow">Nearly out the door</p>
+    <h1 class="page-title">Checkout, <em>{{ user.name|default:"rider" }}.</em></h1>
+    <div class="checkout-layout">
+      <form method="post" class="store-form checkout-form">
+        {% csrf_token %}
+        <h2>Where should we deliver?</h2>
+        <p class="form-account-note">Your order will be linked to {{ user.email }}.</p>
+        {% for field in form %}
+          <div class="form-field{% if field.name == 'payment_method' %} payment-field{% endif %}">
+            {% if field.name == "payment_method" %}
+              <fieldset>
+                <legend>{{ field.label }}</legend>
+                {{ field }}
+              </fieldset>
+            {% else %}
+              <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+            {% endif %}
+            {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        <p class="payment-disclaimer">M-Pesa payments are not processed by this demo site. Selecting M-Pesa records your preference; payment will remain pending until confirmed separately.</p>
+        <button class="button button-dark form-submit" type="submit">Place order <span aria-hidden="true">↗</span></button>
+      </form>
+      <aside class="order-summary checkout-summary">
+        <p class="eyebrow">Your bikes</p>
+        {% for item in items %}
+          <div class="summary-product">
+            <span>{{ item.quantity }} × {{ item.name }}</span>
+            <strong>KSh {{ item.line_total|floatformat:0|intcomma }}</strong>
+          </div>
+        {% endfor %}
+        <div class="summary-line summary-grand-total"><span>Total</span><strong>{{ total_label }}</strong></div>
+        <p class="summary-note">All prices are shown in Kenyan shillings (KES).</p>
+      </aside>
+    </div>
+  </section>
+{% endblock %}

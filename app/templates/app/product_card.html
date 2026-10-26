@@ -1,0 +1,20 @@
+<article class="product-card" data-category="{{ product.category }}">
+  <a class="product-image {{ product.image_class }}" href="{% url 'app:product_detail' product.id %}" aria-label="View details for {{ product.name }}">
+    <span class="product-tag">{{ product.tag }}</span>
+    <img src="{{ product.image }}" alt="{{ product.name }}" loading="lazy">
+    <span class="image-arrow" aria-hidden="true">↗</span>
+  </a>
+  <div class="product-meta"><span>{{ product.type }}</span><span class="product-rating">★ {{ product.rating }}</span></div>
+  <div class="product-title-row">
+    <div>
+      <h3><a href="{% url 'app:product_detail' product.id %}">{{ product.name }}</a></h3>
+      <p>{{ product.description }}</p>
+    </div>
+    <span class="product-price">{{ product.price_label }}</span>
+  </div>
+  <a class="product-details-link" href="{% url 'app:product_detail' product.id %}">View details <span aria-hidden="true">↗</span></a>
+  <form action="{% url 'app:add_to_cart' product.id %}" method="post">
+    {% csrf_token %}
+    <button class="add-button" type="submit">Add to bag <span aria-hidden="true">+</span></button>
+  </form>
+</article>

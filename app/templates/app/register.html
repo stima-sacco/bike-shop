@@ -1,0 +1,26 @@
+{% extends "app/base.html" %}
+{% block title %}Create an account — Velo{% endblock %}
+{% block content %}
+  <section class="account-page">
+    <div class="account-card">
+      <p class="eyebrow">A good ride starts here</p>
+      <h1 class="page-title">Create your <em>account.</em></h1>
+      <p class="account-intro">Create an account to place and keep track of your bike orders.</p>
+      <form method="post" class="store-form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        {% for field in form %}
+          <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="field-help">{{ field.help_text|safe }}</div>{% endif %}
+            {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        {% for error in form.non_field_errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        <button class="button button-dark form-submit" type="submit">Create account <span aria-hidden="true">↗</span></button>
+      </form>
+      <p class="account-switch">Already have an account? <a href="{% url 'app:login' %}">Sign in</a></p>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "app/base.html" %}
+{% block title %}{{ product.name }} — Velo{% endblock %}
+{% block content %}
+  <section class="product-detail-page">
+    <a class="back-link" href="{% if product.is_spare %}{% url 'app:index' %}#spares{% else %}{% url 'app:index' %}#bikes{% endif %}">← Back to {% if product.is_spare %}spares{% else %}bikes{% endif %}</a>
+    <div class="product-detail-layout">
+      <div class="detail-image {{ product.image_class }}">
+        <img src="{{ product.image }}" alt="{{ product.name }}" fetchpriority="high">
+        <span class="product-tag">{{ product.tag }}</span>
+      </div>
+      <div class="detail-copy">
+        <p class="eyebrow">{{ product.type }}</p>
+        <h1 class="page-title">{{ product.name }}</h1>
+        <p class="detail-rating">★ {{ product.rating }} <span>Customer favorite</span></p>
+        <p class="detail-price">{{ product.price_label }}</p>
+        <p class="detail-description">{{ product.details }}</p>
+        <form action="{% url 'app:add_to_cart' product.id %}" method="post">
+          {% csrf_token %}
+          <button class="button button-dark detail-add-button" type="submit">Add to bag <span aria-hidden="true">↗</span></button>
+        </form>
+        <div class="detail-delivery"><span aria-hidden="true">↗</span> Kenya-wide delivery. Order securely with your Velo account.</div>
+        <div class="specifications">
+          <h2>{% if product.is_spare %}Product details{% else %}Built for the ride{% endif %}</h2>
+          <ul>{% for specification in product.specifications %}<li>{{ specification }}</li>{% endfor %}</ul>
+        </div>
+        {% if product.is_spare %}
+          <p class="compatibility-note">Compatibility and exact specifications can vary. Check your bicycle's component type and measurements before ordering; contact us if you need help choosing a part.</p>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

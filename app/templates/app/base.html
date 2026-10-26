@@ -1,0 +1,53 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f5f0">
+    <title>{% block title %}Velo — Bikes made for the ride{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'app/css/storefront.css' %}">
+    <script src="{% static 'app/js/storefront.js' %}" defer></script>
+  </head>
+  <body>
+    <div class="announcement">Thoughtfully made bikes, delivered across Kenya</div>
+    <header class="site-header">
+      <a class="brand" href="{% url 'app:index' %}" aria-label="Velo home">velo<span>.</span></a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation">
+        <span></span><span></span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="{% url 'app:index' %}#bikes">Bikes</a>
+        <a href="{% url 'app:index' %}#spares">Spares</a>
+        <a href="{% url 'app:cart' %}">Your bag</a>
+        {% if user.is_authenticated %}
+          <span class="nav-greeting">Hi, {{ user.name|default:user.email }}</span>
+          <form action="{% url 'app:logout' %}" method="post" class="nav-logout">{% csrf_token %}<button type="submit">Sign out</button></form>
+        {% else %}
+          <a href="{% url 'app:login' %}">Sign in</a>
+          <a href="{% url 'app:register' %}">Create account</a>
+        {% endif %}
+      </nav>
+      <a class="cart-link" href="{% url 'app:cart' %}" aria-label="Shopping bag, {{ cart_count }} {% if cart_count == 1 %}item{% else %}items{% endif %}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1 12H4L5 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
+        <span class="cart-label">Bag</span><span class="cart-count" aria-live="polite">{{ cart_count }}</span>
+      </a>
+    </header>
+    {% if messages %}
+      <div class="messages" role="status">
+        {% for message in messages %}<p class="message message-{{ message.tags }}">{{ message }}</p>{% endfor %}
+      </div>
+    {% endif %}
+    <main class="page-main">{% block content %}{% endblock %}</main>
+    <footer class="site-footer">
+      <a class="brand footer-brand" href="{% url 'app:index' %}">velo<span>.</span></a>
+      <p>Go find your somewhere.</p>
+      <div class="footer-links"><a href="{% url 'app:index' %}#bikes">Bikes</a><a href="{% url 'app:index' %}#spares">Spares</a><a href="{% url 'app:cart' %}">Your bag</a></div>
+      <span class="copyright">© 2025 Velo Bikes. Made for the ride.</span>
+    </footer>
+    <div class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
