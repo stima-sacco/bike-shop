@@ -97,7 +97,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
 
@@ -107,8 +107,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_ROOT = '/home/ueqxglwi/public_html/bikeshop/static/'
-MEDIA_ROOT = '/home/ueqxglwi/public_html/bikeshop/media/'
+STATIC_ROOT = '/home/ueqxglwi/bikeshop.chriscamservices.co.ke/static/'
+MEDIA_ROOT = '/home/ueqxglwi/bikeshop.chriscamservices.co.ke/media/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
