@@ -1,0 +1,5 @@
+.camera-image-widget { display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
+.camera-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.camera-panel video { width: 100%; max-height: 360px; background: #000; border-radius: 4px; }
+.camera-preview { max-width: 100%; max-height: 220px; border-radius: 4px; object-fit: contain; }
+.camera-status:empty { display: none; }

@@ -2,7 +2,8 @@
 *.log
 *.pot
 *.pyc
-static/
+# Only the collectstatic output in the project root; app/static/ is tracked
+/static/
 __pycache__
 # db.sqlite3
 # *.sqlite3
