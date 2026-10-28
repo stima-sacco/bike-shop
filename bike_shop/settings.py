@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=@7b04c@qcae0*@+f=#&1_lw7=u(yho42c2b0cuh(*l7^uccyh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["bikeshop.chriscamservices.co.ke"]
 
