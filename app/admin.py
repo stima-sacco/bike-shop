@@ -1,8 +1,11 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.db import models
+from django.utils.html import format_html
 
 from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import Bike, BikePart, CustomUser, Order, OrderItem
+from .models import Bike, BikeImage, BikePart, BikePartImage, CustomUser, Order, OrderItem
+from .widgets import CameraImageWidget
 
 
 class CustomUserAdmin(UserAdmin):
@@ -28,20 +31,54 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 
 
+class ProductImageInline(admin.StackedInline):
+    extra = 1
+    fields = (("image", "image_preview"), ("caption", "sort_order"))
+    readonly_fields = ("image_preview",)
+    formfield_overrides = {models.ImageField: {"widget": CameraImageWidget}}
+    verbose_name = "Additional image"
+    verbose_name_plural = "Additional images"
+
+    @admin.display(description="Preview")
+    def image_preview(self, obj):
+        if not obj or not obj.image:
+            return "—"
+        return format_html('<img src="{}" alt="" style="max-height:120px;border-radius:4px">', obj.image.url)
+
+
+class BikeImageInline(ProductImageInline):
+    model = BikeImage
+
+
+class BikePartImageInline(ProductImageInline):
+    model = BikePartImage
+
+
 class CatalogProductAdmin(admin.ModelAdmin):
     list_display = ("name", "price", "is_active", "updated_at")
     list_filter = ("is_active",)
     search_fields = ("slug", "name", "description")
     prepopulated_fields = {"slug": ("name",)}
+    readonly_fields = ("image_preview",)
+    formfield_overrides = {models.ImageField: {"widget": CameraImageWidget}}
+
+    @admin.display(description="Preview")
+    def image_preview(self, obj):
+        src = obj.display_image if obj else ""
+        if not src:
+            return "—"
+        return format_html('<img src="{}" alt="" style="max-height:160px;border-radius:4px">', src)
 
 
 @admin.register(Bike)
 class BikeAdmin(CatalogProductAdmin):
     list_display = ("name", "bike_type", "price", "is_active", "updated_at")
     list_filter = ("bike_type", "is_active")
+    inlines = (BikeImageInline,)
     fieldsets = (
         (None, {"fields": ("name", "slug", "bike_type", "description", "details")}),
-        ("Pricing and display", {"fields": ("price", "rating", "tag", "image_url", "image_class", "specifications")}),
+        ("Image", {"fields": ("image", "image_preview", "image_url", "image_class"), "description": "Upload a photo or take one with the camera. Uploaded images take priority over the image URL."}),
+        ("Pricing and display", {"fields": ("price", "rating", "tag", "specifications")}),
         ("Availability", {"fields": ("is_active",)}),
     )
 
@@ -50,9 +87,11 @@ class BikeAdmin(CatalogProductAdmin):
 class BikePartAdmin(CatalogProductAdmin):
     list_display = ("name", "part_type", "price", "is_active", "updated_at")
     list_filter = ("part_type", "is_active")
+    inlines = (BikePartImageInline,)
     fieldsets = (
         (None, {"fields": ("name", "slug", "part_type", "compatibility", "description", "details")}),
-        ("Pricing and display", {"fields": ("price", "rating", "tag", "image_url", "image_class", "specifications")}),
+        ("Image", {"fields": ("image", "image_preview", "image_url", "image_class"), "description": "Upload a photo or take one with the camera. Uploaded images take priority over the image URL."}),
+        ("Pricing and display", {"fields": ("price", "rating", "tag", "specifications")}),
         ("Availability", {"fields": ("is_active",)}),
     )
 
@@ -72,6 +111,6 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = (OrderItemInline,)
 
 
-admin.site.site_header = "Velo"
-admin.site.site_title = "Velo"
+admin.site.site_header = "Bike Shop"
+admin.site.site_title = "Bike Shop"
 admin.site.index_title = "Store management"

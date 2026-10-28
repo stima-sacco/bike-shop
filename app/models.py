@@ -32,6 +32,7 @@ class CatalogProduct(models.Model):
     details = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     specifications = models.JSONField(default=list, blank=True)
+    image = models.ImageField(upload_to="products/%Y/%m/", blank=True)
     image_url = models.URLField(max_length=500, blank=True)
     image_class = models.CharField(max_length=60, blank=True)
     tag = models.CharField(max_length=60, blank=True)
@@ -47,6 +48,12 @@ class CatalogProduct(models.Model):
     @property
     def id(self):
         return self.slug
+
+    @property
+    def display_image(self):
+        if self.image:
+            return self.image.url
+        return self.image_url
 
     def __str__(self):
         return self.name
@@ -87,6 +94,28 @@ class BikePart(CatalogProduct):
     @property
     def type(self):
         return f"Spare / {dict(self.Type.choices)[self.part_type]}"
+
+
+class ProductImage(models.Model):
+    image = models.ImageField(upload_to="products/gallery/%Y/%m/")
+    caption = models.CharField(max_length=120, blank=True)
+    sort_order = models.PositiveSmallIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+        ordering = ("sort_order", "id")
+
+    def __str__(self):
+        return self.caption or self.image.name
+
+
+class BikeImage(ProductImage):
+    product = models.ForeignKey(Bike, on_delete=models.CASCADE, related_name="gallery_images")
+
+
+class BikePartImage(ProductImage):
+    product = models.ForeignKey(BikePart, on_delete=models.CASCADE, related_name="gallery_images")
 
 
 class Order(models.Model):

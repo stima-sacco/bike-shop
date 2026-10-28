@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from .cart import CART_SESSION_KEY, format_kes, get_cart, get_cart_items, get_cart_total
-from .catalog import product_to_dict
+from .catalog import product_gallery, product_to_dict
 from .forms import CheckoutForm, CustomUserCreationForm, SignInForm
 from .models import Bike, BikePart, Order, OrderItem
 
@@ -37,6 +37,7 @@ def product_detail(request, product_id):
             "product": {
                 **product_to_dict(product),
                 "price_label": format_kes(product.price),
+                "gallery": product_gallery(product),
             },
         },
     )

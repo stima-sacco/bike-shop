@@ -1,0 +1,17 @@
+<div class="camera-image-widget" data-camera-widget>
+  {% include "django/forms/widgets/clearable_file_input.html" %}
+  <div class="camera-actions">
+    <button type="button" class="button" data-camera-open>Take photo</button>
+    <input type="file" accept="image/*" capture="environment" hidden data-camera-fallback>
+  </div>
+  <div class="camera-panel" hidden data-camera-panel>
+    <video autoplay playsinline muted data-camera-video></video>
+    <div class="camera-actions">
+      <button type="button" class="button default" data-camera-capture>Capture</button>
+      <button type="button" class="button" data-camera-switch>Switch camera</button>
+      <button type="button" class="button" data-camera-cancel>Cancel</button>
+    </div>
+  </div>
+  <img class="camera-preview" alt="" hidden data-camera-preview>
+  <p class="help camera-status" data-camera-status></p>
+</div>
